@@ -16,9 +16,9 @@ mainFunction valueA valueB valueC
     | otherwise = "-"
 
 isATriangule :: (Ord a, Num a) => a -> a -> a -> Bool
-isATriangule a b c =
-    let minimumV = getTwoMinimumValues a b c
-        in sum minimumV >= maximum [a, b, c]    
+isATriangule a b c 
+    | a + b >= c && b + c >= a && c + a >= b = True
+    | otherwise = False
 
 getPerimeter :: Num a => a -> a -> a -> a
 getPerimeter a b c = a + b + c
@@ -31,5 +31,3 @@ getAreaByHeronFormula sideA sideB sideC =
     let p = getSemiPerimeter $ getPerimeter sideA sideB sideC
         in sqrt (p * (p - sideA) * (p - sideB) * (p - sideC))
 
-getTwoMinimumValues :: (Ord a) => a -> a -> a -> [a]
-getTwoMinimumValues a b c = filter (/= maximum [a, b, c]) [a, b, c]
