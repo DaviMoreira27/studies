@@ -1,4 +1,4 @@
 {
-    "C_Cpp.default.compilerPath": "/home/linuxbrew/.linuxbrew/bin/gcc-14",
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
     "C_Cpp.formatting": "disabled",
 }
