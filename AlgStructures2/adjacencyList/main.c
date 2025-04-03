@@ -1,52 +1,129 @@
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define Vertex int 
+#define Vertex int
 
-// Edge -> A double way Arc (Graph)
+typedef struct node *Link; // ponteiro para noh
 
-// Arc -> A link between two Vertex (Digraph)
+// noh da lista de adjacencia
+struct node {
+  Vertex w;
+  bool visited;
+  Link next; // aponta para o proximo no
+} Node;
 
-// Vertex -> Each value of the Graph/Digraph
-
-// Link is of type nodeStruct
-typedef struct nodeStruct *Link;
-
-// Each node has a link to the next node
-struct nodeStruct {
-    Vertex x;
-    Link next; 
+// o (Di)Grafo armazena o nro de vertices, o nro de arcos/arestas e um ponteiro
+// para a lista de adjacencia
+struct graph {
+  int V;     // qtde de vertices
+  int A;     // qtde de arcos/arestas
+  Link *adj; // ponteiro para array de vertices
 };
 
-// The graph struct has the total number of vertex, arcs, and a link to the first node 
-struct graphStruct {
-    int numVertex;
-    int numArcs;
-    Link *adj;
-};
+typedef struct graph *Digraph;
+#define Graph Digraph
 
-typedef struct graphStruct *Graph;
-
-
-/*
-O que acontece se não inicializar adj[i] = NULL?
-
-Se você simplesmente alocar o array sem inicializar os ponteiros para NULL, o C não garante que os valores dentro do array sejam NULL. Em vez disso, adj[i] pode conter um endereço inválido (lixo de memória). Isso pode causar:
-*/
-Graph initGraph (int graphSize) {
-    Graph graph = *(Graph *)malloc(sizeof(*graph));
-    graph->numArcs = 0;
-    graph->numVertex = 0;
-    graph->adj = (Link *)malloc(sizeof(Link *));
-    for (int i = 0; i <= graphSize; i++) {
-        graph->adj[i] = NULL;
-    }
-
-    return graph;
+Graph initGraph(int V) {
+  Graph G = (Graph)malloc(sizeof(*G));
+  G->V = V;
+  G->A = 0;
+  G->adj = (Link *)malloc(V * sizeof(Link *));
+  for (int i = 0; i < V; i++) {
+    G->adj[i] = NULL;
+  }
+  return G;
 }
 
+Link newArc(Vertex w, Link next) {
+  Link a = (Link)malloc(sizeof(*a));
+  a->w = w;
+  a->next = next;
+  return a;
+}
 
-Link newArc (Vertex x, Link next) {
-    Link node = (Link)malloc((sizeof(*node)));
-    node->next = next;
-    node->x = x;
+void insertArc(Graph G, Vertex v, Vertex w) {
+  // verifica se o vertice w já existe na lista de adjacencia de v
+  for (Link v_adj = G->adj[v]; v_adj != NULL; v_adj = v_adj->next) {
+    if (v_adj->w == w)
+      return;
+  }
+  // insere arco no inicio da lista de adjacencia
+  G->adj[v] = newArc(w, G->adj[v]);
+  G->A++;
+}
+
+void insertEdge(Graph G, Vertex v, Vertex w) {
+  insertArc(G, v, w);
+  insertArc(G, w, v);
+}
+
+void removeArc(Graph G, Vertex v, Vertex r) {
+  if (G->adj[v] == NULL) { // nao existe arco saindo de v
+    return;
+  }
+  Link previous = G->adj[v];
+  for (Link p = G->adj[v]; p != NULL; p = p->next) { // cc, percorre lista
+    if (p->w == r) {  // se eh o vertice a ser retirado
+      G->A--;
+      if (G->adj[v] == p) { // se for o primeiro da lista
+        G->adj[v] = p->next;
+        return;
+      }
+      previous->next = p->next;
+      return;
+    } else {
+      previous = p; // guarda referencia do anterior
+    }
+  }
+}
+
+void removeEdge(Graph G, Vertex v, Vertex w) {
+  removeArc(G, v, w);
+  removeArc(G, w, v);
+}
+
+void destroyGraph(Graph G) {
+  if (G != NULL) {
+    for(int i; i < G-> V; G++) {
+      free(G->adj[i]);
+    }
+    free(G->adj);
+    free(G);
+  }
+}
+
+void printGraph(Graph G) {
+  printf("\nTotal of vertices: %d, total of arcs: %d\n", G->V, G->A);
+  for (int i = 0; i < G->V; i++) {
+    printf("* Vertex %d, arcs: \n", i);
+    for (Link p = G->adj[i]; p != NULL; p = p->next) {
+      printf("  -> %d\n", p->w);
+    }
+  }
+}
+
+void BFS(Graph *g, Vertex x) {
+    Vertex *queue = (Vertex *)malloc(sizeof(Vertex) * g->V);
+    int startIn = 0, endIn = 0;
+    
+    queue[endIn++] = x;
+
+    while (startIn != endIn) {
+        Vertex elem = queue[startIn++];
+
+        if (!g->adj[elem]->visited) {
+            g->adj[elem]->visited = true;
+
+            printf("Visited %d \n", elem);
+            for (Node *p = g->adj[elem]; p != NULL; p = p->next) { // Corrigido para ponteiro
+                Vertex w = p->value;
+                if (!g->adj[w]->visited) { // Corrigida a verificação do if
+                    queue[endIn++] = w;
+                }
+            }
+        }
+    }
+
+    free(queue); // Liberação da memória alocada
 }

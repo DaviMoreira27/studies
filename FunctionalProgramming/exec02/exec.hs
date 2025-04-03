@@ -9,6 +9,7 @@ main = do
 isPositive :: (Integral a) => a -> a -> Bool
 isPositive x y = x > 0 && y > 0
 
+createList :: (Integral a) => a -> a -> [a]
 createList a b
     | isPositive a b == True = [a.. b]
     | otherwise = []
