@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #define Vertex int
 
@@ -9,9 +8,8 @@ typedef struct node *Link; // ponteiro para noh
 // noh da lista de adjacencia
 struct node {
   Vertex w;
-  bool visited;
   Link next; // aponta para o proximo no
-} Node;
+};
 
 // o (Di)Grafo armazena o nro de vertices, o nro de arcos/arestas e um ponteiro
 // para a lista de adjacencia
@@ -101,29 +99,4 @@ void printGraph(Graph G) {
       printf("  -> %d\n", p->w);
     }
   }
-}
-
-void BFS(Graph *g, Vertex x) {
-    Vertex *queue = (Vertex *)malloc(sizeof(Vertex) * g->V);
-    int startIn = 0, endIn = 0;
-    
-    queue[endIn++] = x;
-
-    while (startIn != endIn) {
-        Vertex elem = queue[startIn++];
-
-        if (!g->adj[elem]->visited) {
-            g->adj[elem]->visited = true;
-
-            printf("Visited %d \n", elem);
-            for (Node *p = g->adj[elem]; p != NULL; p = p->next) { // Corrigido para ponteiro
-                Vertex w = p->value;
-                if (!g->adj[w]->visited) { // Corrigida a verificação do if
-                    queue[endIn++] = w;
-                }
-            }
-        }
-    }
-
-    free(queue); // Liberação da memória alocada
 }
