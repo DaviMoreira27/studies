@@ -276,3 +276,70 @@ bool checkHamiltonPath(Graph G, Vertex start, Vertex end) {
   printf("\nHamilton Path: ");
   return hamiltonPath(G, start, end, 0);
 }
+
+void checkEulerPathDigraph(Graph G) {
+  int *inDegree = (int *)calloc(G->V, sizeof(int));
+  int *outDegree = (int *)calloc(G->V, sizeof(int));
+
+  for (int v = 0; v < G->V; v++) {
+    for (Node p = G->adj[v]; p != NULL; p = p->next) {
+      outDegree[v]++;
+      inDegree[p->x]++;
+    }
+  }
+
+  int start = -1, end = -1;
+  for (int i = 0; i < G->V; i++) {
+    if (outDegree[i] - inDegree[i] == 1) {
+      if (start == -1) start = i;
+      else {
+        printf("An Euler path or cicle does NOT exist.\n");
+        free(inDegree);
+        free(outDegree);
+        return;
+      }
+    } else if (inDegree[i] - outDegree[i] == 1) {
+      if (end == -1) end = i;
+      else {
+        printf("An Euler path or cicle does NOT exist.\n");
+        free(inDegree);
+        free(outDegree);
+        return;
+      }
+    } else if (inDegree[i] != outDegree[i]) {
+      printf("An Euler path or cicle does NOT exist.\n");
+      free(inDegree);
+      free(outDegree);
+      return;
+    }
+  }
+
+  if (start != -1 && end != -1) {
+    printf("An Euler PATH exists.\n");
+    eulerPath(G, start, end);
+  } else {
+    printf("An Euler CICLE exists.\n");
+    eulerPath(G, 0, 0);
+  }
+
+  free(inDegree);
+  free(outDegree);
+}
+
+
+int main() {
+  int V, A;
+  scanf("%d", &V);
+  scanf("%d", &A);
+  Graph G = initGraph(V);
+  for (int i = 0; i < A; i++) {
+    int v, w;
+    scanf("%d %d", &v, &w);
+    insertArc(G, v, w, 1);
+  }
+
+  checkEulerPathDigraph(G);
+
+  destroyGraph(G);
+  return 0;
+}
