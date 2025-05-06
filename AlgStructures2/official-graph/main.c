@@ -31,67 +31,64 @@ Graph *initGraph(Vertex v) {
     return g;
 }
 
-void insertVertex(Graph *g, Vertex v, int weight) {
-    g->V++;
-    Node *newNode = malloc(sizeof(Node));
-
-    newNode->next = NULL;
-    newNode->vertex = v;
-    newNode->visited = 0;
-    newNode->weight = weight;
-
+void insertVertex(Graph *g, Vertex v) {
     if (g->adjList[v]) {
-        printf("Vertex already exists");
+        printf("Vertex already exists\n");
         exit(EXIT_FAILURE);
     }
 
-    g->adjList[v] = newNode;
-    
+    g->adjList[v] = NULL;
 }
 
-void insertArc (Graph *g, Vertex x, Vertex y, int weight1, int weight2) {
+
+void insertArc(Graph *g, Vertex x, Vertex y, int weight) {
     if (!g->adjList[x]) {
-        insertVertex(g, x, weight1);
+        insertVertex(g, x);
     }
 
     if (!g->adjList[y]) {
-        insertVertex(g, y, weight2);
+        insertVertex(g, y);
     }
 
-    g->adjList[x]->next = g->adjList[y];
+    Node *newNode = malloc(sizeof(Node));
+    newNode->vertex = y;
+    newNode->weight = weight;
+    newNode->visited = 0;
+
+    newNode->next = g->adjList[x];
+    g->adjList[x] = newNode;
+
     g->A++;
 }
 
 void insertEdge (Graph *g, Vertex x, Vertex y, int weight1, int weight2) {
-    insertArc(g, x, y, weight1, weight2);
-    insertArc(g, y, x, weight2, weight1);
+    insertArc(g, x, y, weight1);
+    insertArc(g, y, x, weight2);
     g->A++;
 
 }
 
-void removeVertex (Graph *g, Vertex x) {
-    if (!g->adjList[x]) {
-        printf("Vertex do not exists");
-        exit(EXIT_FAILURE);
-    }
-
+void printGraph(Graph *g) {
     for (int i = 0; i < g->V; i++) {
-        if (g->adjList[i]->vertex == x) {
-            g->adjList[i] = NULL;
+        printf("Vertex %d, arcs: ", i);
+        for (Node *print = g->adjList[i]; print != NULL; print = print->next) {
+            printf("  -> %d (weigth %d)", print->vertex, print->weight);
         }
-
-        Node *nextNode = g->adjList[i]->next;
-
-        while (nextNode != NULL) {
-            if (nextNode->vertex == x) {
-                
-            }
-        }
+        printf("\n");
     }
-
 }
 
 int main() {
-    Graph *graph = initGraph(9);
+    int V, A, u, v, w;
+    if (scanf("%d", &V) != 1) return 1;
+    if (scanf("%d", &A) != 1) return 1;
+
+    Graph* graph = initGraph(V);
+    for (int i = 0; i < A; i++) {
+        if (scanf("%d %d %d", &u, &v, &w) != 2) return 1;
+        insertArc(graph, u, v, w);
+    }
+
+    printGraph(graph);
     return 0;
 }
