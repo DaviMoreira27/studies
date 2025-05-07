@@ -68,6 +68,29 @@ void insertEdge (Graph *g, Vertex x, Vertex y, int weight1, int weight2) {
 
 }
 
+void removeArc (Graph *g, Vertex x, Vertex y) {
+    if (!g->adjList[x]) {
+        printf("There is no edge out of x");
+        exit(EXIT_FAILURE);
+    }
+
+    Node *node = g->adjList[x];
+    // Traversing the list
+    for (Node *removeNode = g->adjList[x]; removeNode != NULL; removeNode = removeNode->next) {
+        if (removeNode->vertex == y) {
+            g->A--;
+            if (g->adjList[x] == removeNode) { // If its the first in the list
+              g->adjList[y] = removeNode->next;
+              return;
+            }
+            node->next = removeNode->next;
+            return;
+        }
+        node = removeNode;
+    }
+
+}
+
 void printGraph(Graph *g) {
     for (int i = 0; i < g->V; i++) {
         printf("Vertex %d, arcs: ", i);
@@ -76,6 +99,40 @@ void printGraph(Graph *g) {
         }
         printf("\n");
     }
+}
+
+void DFS (Graph *g, Vertex v) {
+    // Visits the vertex
+    g->adjList[v]->visited = 1;
+    printf("Visited Vertex: %d\n", g->adjList[v]->vertex);
+
+    // Traverses the adjancency list of vertex v
+    for (Node *visit = g->adjList[v]; visit != NULL; visit = visit->next) {
+        if (!g->adjList[visit->vertex]->visited) {
+            // if the adjancecy vertex was not visited yet, runs DFS recursively
+            DFS(g, visit->vertex);
+        }
+    }
+}
+
+void startDFS (Graph *g) {
+    for (int i = 0; i < g->V; i++) {
+        g->adjList[i]->visited = 0;
+    }
+    printf("DFS\n");
+    DFS(g, 0);
+}
+
+void BFS(Graph *g, Vertex v) {
+    
+}
+
+void startBFS (Graph *g) {
+    for (int i = 0; i < g->V; i++) {
+        g->adjList[i]->visited = 0;
+    }
+    printf("BFS\n");
+    BFS(g, 0);
 }
 
 int main() {
