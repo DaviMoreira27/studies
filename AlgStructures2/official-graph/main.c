@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 
 #define Vertex int
 
@@ -124,7 +124,32 @@ void startDFS (Graph *g) {
 }
 
 void BFS(Graph *g, Vertex v) {
-    
+    // Create a queue
+    int *queue = malloc(sizeof(Vertex) * g->V);
+    int start, end = 0;
+
+    // Add the first element to the end of the queue and increments the counter to be used in the while loop
+    queue[end++] = v;
+    // While the start index is different from the end index, continue
+    while (start != end) {
+        // Start with the first element in queue, if its already visited, go to the next
+        Vertex element = queue[start++];
+        if (!g->adjList[element]->visited) {
+            g->adjList[element]->visited = 1;
+            printf("Vertex Visited: %d", g->adjList[element]->vertex);
+
+            // Traverse all the vertex neighbors
+            // While the neighbor exists in the adjancecy list, go to the next
+            for(Node *neighbor = g->adjList[element]; neighbor != NULL; neighbor = neighbor->next) {
+                
+                Vertex neighborVertex = neighbor->vertex;
+                // If the neighbor was not visited, add it to the queue to be visited in the next iteration
+                if (!g->adjList[neighborVertex]->visited) {
+                    queue[end++] = neighborVertex;
+                }
+            }
+        }
+    }
 }
 
 void startBFS (Graph *g) {
