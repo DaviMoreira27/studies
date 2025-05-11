@@ -70,11 +70,20 @@ formatFrame :: Frame -> String
 formatFrame frame
   | isStrike frame = "X _"
   | isSpare frame =
-      let x:y:rest = frame
-          xStr = if x == 10 then "X" else show x
-      in xStr ++ " /" ++ concatMap ((" " ++) . formatValue) rest
-  | length frame > 2 = unwords (map formatValue frame)
+    let x:y:rest = frame
+        xStr = formatValue x
+    in xStr ++ " /" ++ concatMap ((" " ++) . formatValue) rest
+  | length frame > 2 = formatFinalFrame frame
   | otherwise = unwords (map formatValue frame)
+
+formatFinalFrame :: Frame -> String
+formatFinalFrame [x,y,z]
+  | x == 10 && y + z == 10 = "X " ++ (if y == 10 then "X" else show y) ++ " /" 
+  | x == 10 && y == 10    = "X X " ++ formatValue z                          
+  | x == 10                = "X " ++ show y ++ " " ++ show z
+  | x + y == 10            = show x ++ " / " ++ formatValue z
+  | otherwise              = unwords (map formatValue [x,y,z])
+formatFinalFrame frame = unwords (map formatValue frame)
 
 formatValue :: Int -> String
 formatValue 10 = "X"
