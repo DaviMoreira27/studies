@@ -12,12 +12,11 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-struct Graph {
+typedef struct Graph {
     int V;
     int A;
     Node **adjList;
-
-} typedef Graph;
+} Graph;
 
 Graph *initGraph(Vertex v) {
     Graph* g = malloc(sizeof(Graph));
@@ -31,146 +30,150 @@ Graph *initGraph(Vertex v) {
     return g;
 }
 
-void insertVertex(Graph *g, Vertex v) {
-    if (g->adjList[v]) {
-        printf("Vertex already exists\n");
-        exit(EXIT_FAILURE);
-    }
-
-    g->adjList[v] = NULL;
-}
-
-
 void insertArc(Graph *g, Vertex x, Vertex y, int weight) {
-    if (!g->adjList[x]) {
-        insertVertex(g, x);
-    }
-
-    if (!g->adjList[y]) {
-        insertVertex(g, y);
-    }
-
     Node *newNode = malloc(sizeof(Node));
     newNode->vertex = y;
     newNode->weight = weight;
     newNode->visited = 0;
-
     newNode->next = g->adjList[x];
     g->adjList[x] = newNode;
-
     g->A++;
 }
 
-void insertEdge (Graph *g, Vertex x, Vertex y, int weight1, int weight2) {
+void insertEdge(Graph *g, Vertex x, Vertex y, int weight1, int weight2) {
     insertArc(g, x, y, weight1);
     insertArc(g, y, x, weight2);
-    g->A++;
-
+    // g->A++; // Removido: já é incrementado em insertArc
 }
 
-void removeArc (Graph *g, Vertex x, Vertex y) {
+void removeArc(Graph *g, Vertex x, Vertex y) {
     if (!g->adjList[x]) {
-        printf("There is no edge out of x");
+        printf("There is no edge out of x\n");
         exit(EXIT_FAILURE);
     }
 
-    Node *node = g->adjList[x];
-    // Traversing the list
-    for (Node *removeNode = g->adjList[x]; removeNode != NULL; removeNode = removeNode->next) {
-        if (removeNode->vertex == y) {
-            g->A--;
-            if (g->adjList[x] == removeNode) { // If its the first in the list
-              g->adjList[y] = removeNode->next;
-              return;
+    Node *prev = NULL;
+    for (Node *curr = g->adjList[x]; curr != NULL; prev = curr, curr = curr->next) {
+        if (curr->vertex == y) {
+            if (prev == NULL) {
+                g->adjList[x] = curr->next;
+            } else {
+                prev->next = curr->next;
             }
-            node->next = removeNode->next;
+            free(curr);
+            g->A--;
             return;
         }
-        node = removeNode;
     }
-
 }
 
 void printGraph(Graph *g) {
     for (int i = 0; i < g->V; i++) {
-        printf("Vertex %d, arcs: ", i);
+        printf("Vertex %d, arcs:", i);
         for (Node *print = g->adjList[i]; print != NULL; print = print->next) {
-            printf("  -> %d (weigth %d)", print->vertex, print->weight);
+            printf("  -> %d (weight %d)", print->vertex, print->weight);
         }
         printf("\n");
     }
 }
 
-void DFS (Graph *g, Vertex v) {
-    // Visits the vertex
-    g->adjList[v]->visited = 1;
-    printf("Visited Vertex: %d\n", g->adjList[v]->vertex);
-
-    // Traverses the adjancency list of vertex v
-    for (Node *visit = g->adjList[v]; visit != NULL; visit = visit->next) {
-        if (!g->adjList[visit->vertex]->visited) {
-            // if the adjancecy vertex was not visited yet, runs DFS recursively
-            DFS(g, visit->vertex);
+void DFS(Graph *g, Vertex v) {
+    printf("Visited Vertex: %d\n", v);
+    Node *list = g->adjList[v];
+    for (Node *n = list; n != NULL; n = n->next) {
+        if (g->adjList[n->vertex] && !g->adjList[n->vertex]->visited) {
+            g->adjList[n->vertex]->visited = 1;
+            DFS(g, n->vertex);
         }
     }
 }
 
-void startDFS (Graph *g) {
+void startDFS(Graph *g) {
     for (int i = 0; i < g->V; i++) {
-        g->adjList[i]->visited = 0;
+        if (g->adjList[i])
+            g->adjList[i]->visited = 0;
     }
     printf("DFS\n");
-    DFS(g, 0);
+    if (g->adjList[0]) {
+        g->adjList[0]->visited = 1;
+        DFS(g, 0);
+    }
 }
 
 void BFS(Graph *g, Vertex v) {
-    // Create a queue
     int *queue = malloc(sizeof(Vertex) * g->V);
-    int start, end = 0;
+    int start = 0, end = 0;
 
-    // Add the first element to the end of the queue and increments the counter to be used in the while loop
     queue[end++] = v;
-    // While the start index is different from the end index, continue
+
     while (start != end) {
-        // Start with the first element in queue, if its already visited, go to the next
         Vertex element = queue[start++];
+        if (!g->adjList[element]) continue;
         if (!g->adjList[element]->visited) {
             g->adjList[element]->visited = 1;
-            printf("Vertex Visited: %d", g->adjList[element]->vertex);
+            printf("Vertex Visited: %d\n", element);
 
-            // Traverse all the vertex neighbors
-            // While the neighbor exists in the adjancecy list, go to the next
-            for(Node *neighbor = g->adjList[element]; neighbor != NULL; neighbor = neighbor->next) {
-                
+            for (Node *neighbor = g->adjList[element]; neighbor != NULL; neighbor = neighbor->next) {
                 Vertex neighborVertex = neighbor->vertex;
-                // If the neighbor was not visited, add it to the queue to be visited in the next iteration
-                if (!g->adjList[neighborVertex]->visited) {
+                if (g->adjList[neighborVertex] && !g->adjList[neighborVertex]->visited) {
                     queue[end++] = neighborVertex;
                 }
             }
         }
     }
+
+    free(queue);
 }
 
-void startBFS (Graph *g) {
+void startBFS(Graph *g) {
     for (int i = 0; i < g->V; i++) {
-        g->adjList[i]->visited = 0;
+        if (g->adjList[i])
+            g->adjList[i]->visited = 0;
     }
     printf("BFS\n");
-    BFS(g, 0);
+    if (g->adjList[0]) {
+        BFS(g, 0);
+    }
+}
+
+bool simplePath(Graph *g, Vertex a, Vertex b, int counter) {
+    if (!g->adjList[a] || g->adjList[a]->visited) {
+        return false;
+    }
+
+    g->adjList[a]->visited = 1;
+    printf("Vertex %d: %d\n", counter, a);
+    counter++;
+
+    for (Node *n = g->adjList[a]; n != NULL; n = n->next) {
+        if (n->vertex == b) {
+            printf("Vertex %d: %d\n", counter, b);
+            return true;
+        }
+
+        if (!g->adjList[n->vertex] || g->adjList[n->vertex]->visited)
+            continue;
+
+        if (simplePath(g, n->vertex, b, counter))
+            return true;
+    }
+
+    return false;
 }
 
 int main() {
-    int V, A, u, v, w;
+    int V, A, u, v;
     if (scanf("%d", &V) != 1) return 1;
     if (scanf("%d", &A) != 1) return 1;
 
-    Graph* graph = initGraph(V);
+    Graph *graph = initGraph(V);
     for (int i = 0; i < A; i++) {
-        if (scanf("%d %d %d", &u, &v, &w) != 2) return 1;
-        insertArc(graph, u, v, w);
+        if (scanf("%d %d", &u, &v) != 2) return 1;
+        insertArc(graph, u, v, 5);
     }
 
-    printGraph(graph);
+    simplePath(graph, 0, 4, 0);
+    // printGraph(graph);
+
     return 0;
 }

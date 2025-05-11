@@ -1,4 +1,7 @@
 {
     "C_Cpp.default.compilerPath": "/usr/bin/gcc",
     "C_Cpp.formatting": "disabled",
+    "files.associations": {
+        "stdlib.h": "c"
+    },
 }
