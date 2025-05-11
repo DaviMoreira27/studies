@@ -71,9 +71,14 @@ formatFrame frame
   | isStrike frame = "X _"
   | isSpare frame =
       let x:y:rest = frame
-      in show x ++ " /" ++ concatMap ((" " ++) . show) rest
-  | length frame > 2 = unwords (map show frame)
-  | otherwise = unwords (map show frame)
+          xStr = if x == 10 then "X" else show x
+      in xStr ++ " /" ++ concatMap ((" " ++) . formatValue) rest
+  | length frame > 2 = unwords (map formatValue frame)
+  | otherwise = unwords (map formatValue frame)
+
+formatValue :: Int -> String
+formatValue 10 = "X"
+formatValue n  = show n
 
 formatGame :: [Frame] -> String
 formatGame frames = concat $ zipWith format frames [1..]
