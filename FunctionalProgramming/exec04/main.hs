@@ -18,8 +18,8 @@ main = do
 make a pair with the n + 1 element in the list, if the nth element is the number ten
 it will make pair with the number 0, representing a strike - Ok
 4. For each tuple checks if it makes a spare or strike, if so add a plus one on the points multiplier variable
-5. Use reduce to sum the total points of the match, then add 10 * the points multipler variable
-6. Show the result (dont know how yet)
+5. **Use reduce to sum the total points of the match, then add 10 * the points multipler variable - Found an alternative
+6. Show the result (dont know how yet) - Ok
 -}
 
 type Frame = [Int]
@@ -56,13 +56,22 @@ sumLists :: [Frame] -> [Int]
 sumLists [] = []
 sumLists [f] = [sum f]
 sumLists (f:fs)
-  | isStrike f = sum f + bonusStrike fs : sumLists fs
-  | isSpare f = sum f + bonusSpare fs : sumLists fs
-  | otherwise = sum f : sumLists fs
+  | isStrike f = (sum f + bonusStrike fs) : sumLists fs
+  | isSpare f  = (sum f + bonusSpare fs)  : sumLists fs
+  | otherwise  = sum f : sumLists fs
   where
-    bonusStrike (a:_) = sum (take 2 a)
+    bonusStrike :: [Frame] -> Int
+    bonusStrike [] = 0
+    bonusStrike ((x:y:_):rest)
+      | x == 10 = 10 + if null rest then y else getTopList (getTopFrame rest)
+      | otherwise = x + y
+    bonusStrike ([x]:rest)
+      | x == 10 = 10 + if null rest then 0 else getTopList (getTopFrame rest)
+      | otherwise = x
     bonusStrike _ = 0
-
+    
+    bonusSpare :: [Frame] -> Int
+    bonusSpare [] = 0
     bonusSpare ((x:_):_) = x
     bonusSpare _ = 0
 
@@ -95,3 +104,19 @@ formatGame frames = concat $ zipWith format frames [1..]
     format f i
       | i == length frames = formatFrame f
       | otherwise = formatFrame f ++ " | "
+
+-- These two functions are substitutes for the head function
+-- Head throws an exception if the list is empty
+
+-- Returns the first element in a list
+-- If the list is empty, return 0
+getTopList :: Num a => [a] -> a
+getTopList [] = 0
+getTopList [x] = x
+getTopList (x:_) = x
+
+-- Returns the first sub-list in a frame's list
+-- If the first sublist is empty, return an empty list
+getTopFrame :: [[a]] -> [a]
+getTopFrame [] = []
+getTopFrame (x:_) = x
