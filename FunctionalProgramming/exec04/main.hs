@@ -1,3 +1,5 @@
+-- Davi Moreira de Santana - 15447584
+
 main = do
     -- putStrLn "Digite o numero de pinos derrubados por jogada separados por espaço:"
     match <- getLine
