@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.zip.GZIPOutputStream;
 
 public class ListSeven {
     public static void main (String[] args) {
@@ -25,7 +27,9 @@ public class ListSeven {
             
             // new ListSeven().listFileRecursivelyWithFilter(dir, filterExecutable);
 
-            new ListSeven().byteStringOutput("Davi");
+            // new ListSeven().byteStringOutput("Davi");
+
+            new ListSeven().inputAndOutputClass();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -98,7 +102,31 @@ public class ListSeven {
             Endereco addr = new Endereco("Rua Tal", "Numero Tal", "Bairro Tal");
             DadosPessoais dp = new DadosPessoais(addr, 125, "Davi");
 
-            ObjectOutputStream obj = new ObjectOutputStream();
+            /*
+             * Cria um FileOutputStream que armazenará os dados
+             */
+            FileOutputStream newFile = new FileOutputStream("exercise04.gz");
+            /*
+             * Crio uma stream entre o newFile e o zipFile, tudo que for escrito
+             * no newFile, será automaticamente compactado para Gzip
+             */
+            GZIPOutputStream zipFile = new GZIPOutputStream(newFile);
+            /*
+             * Envolve o GZIPOutputStream com um ObjectOutputStream que permite escrever
+             * objetos Java (desde que sejam Serializable) em um fluxo de bytes. Neste caso,
+             * os bytes gerados são comprimidos e salvos no arquivo.
+             */
+            ObjectOutputStream objOut = new ObjectOutputStream(zipFile);
+
+            /*
+             * O objeto dp é convertido em um array de bytes serializados que passo por
+             * ObjectOutputStream, transformando o objeto em bytes -> GZIPOutputStream,
+             * comprime os bytes gerados -> FileOutputStream, grava os bytes comprimidos no
+             * arquivo exercise04.gz
+             */
+            objOut.writeObject(dp);;
+
+            objOut.close();
         } catch (Exception e) {
             throw e;
         }
