@@ -1,11 +1,14 @@
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class ListSeven {
@@ -97,7 +100,7 @@ public class ListSeven {
         }
     }
 
-    public void inputAndOutputClass () throws IOException, SecurityException {
+    public void inputAndOutputClass () throws IOException, SecurityException, ClassNotFoundException {
         try {
             Endereco addr = new Endereco("Rua Tal", "Numero Tal", "Bairro Tal");
             DadosPessoais dp = new DadosPessoais(addr, 125, "Davi");
@@ -127,6 +130,17 @@ public class ListSeven {
             objOut.writeObject(dp);;
 
             objOut.close();
+
+            // Caminho inverso
+            FileInputStream fileIn = new FileInputStream("exercise04.gz");
+            GZIPInputStream gzipIn = new GZIPInputStream(fileIn);
+            ObjectInputStream objIn = new ObjectInputStream(gzipIn);
+
+            DadosPessoais dpLido = (DadosPessoais) objIn.readObject();
+
+            System.out.printf("IDADE: %d", dpLido.idade);
+
+            objIn.close();
         } catch (Exception e) {
             throw e;
         }
