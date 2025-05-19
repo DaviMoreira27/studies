@@ -1,5 +1,10 @@
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 public class ListSeven {
     public static void main (String[] args) {
@@ -13,10 +18,14 @@ public class ListSeven {
                     return name.endsWith(".exe");
                 }
             };
+
+            System.out.println(filterExecutable.getClass() + " " + dir);
             
             // new ListSeven().listFileRecursively(dir);
             
-            new ListSeven().listFileRecursivelyWithFilter(dir, filterExecutable);
+            // new ListSeven().listFileRecursivelyWithFilter(dir, filterExecutable);
+
+            new ListSeven().byteStringOutput("Davi");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -47,7 +56,7 @@ public class ListSeven {
     }
 
     public void listFileRecursivelyWithFilter(String directory, FilenameFilter filter) throws Exception {
-        try {
+        try {   
             Boolean isDir = new File(directory).isDirectory();
 
             if (!isDir) {
@@ -64,6 +73,32 @@ public class ListSeven {
 
                 System.out.format("Nome do Arquivo: %s \n", file.getPath());
             }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void byteStringOutput (String text) throws IOException {
+        try {
+            ByteArrayInputStream string = new ByteArrayInputStream(text.getBytes());
+
+            File newFile = new File("./exercise03.txt");
+            FileOutputStream newStream = new FileOutputStream(newFile);
+
+            string.transferTo(newStream);
+            newStream.close();
+            string.close();
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
+    public void inputAndOutputClass () throws IOException, SecurityException {
+        try {
+            Endereco addr = new Endereco("Rua Tal", "Numero Tal", "Bairro Tal");
+            DadosPessoais dp = new DadosPessoais(addr, 125, "Davi");
+
+            ObjectOutputStream obj = new ObjectOutputStream();
         } catch (Exception e) {
             throw e;
         }
