@@ -1,13 +1,19 @@
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -32,7 +38,9 @@ public class ListSeven {
 
             // new ListSeven().byteStringOutput("Davi");
 
-            new ListSeven().inputAndOutputClass();
+            // new ListSeven().inputAndOutputClass();
+
+            new ListSeven().readingAndSubstitution();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -141,6 +149,37 @@ public class ListSeven {
             System.out.printf("IDADE: %d", dpLido.idade);
 
             objIn.close();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void readingAndSubstitution () throws IOException {
+        try {
+            // InputStream readFile = new BufferedInputStream(new FileInputStream("./exercise05.txt"));
+            // int data = readFile.read();
+            // String fullText = "";
+
+            // while (data != -1) {
+            //     System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out), true, "UTF-8"));
+            //     System.out.print((char) data);
+            //     fullText += (char) data;
+
+            //     data = readFile.read();
+            // }
+            // readFile.close();
+            // System.out.println("\nREPLACE");
+            
+            // String resultedFirst = fullText.replace("muito", "pouco");
+            // String resultedFinal = resultedFirst.replace("Muito", "Pouco");
+
+            // System.out.print(resultedFinal);
+
+            String content = new String(Files.readAllBytes(Paths.get("./exercise05.txt")), StandardCharsets.UTF_8);
+
+            content = content.replace("muito", "pouco").replace("Muito", "Pouco");
+
+            System.out.println(content);
         } catch (Exception e) {
             throw e;
         }
