@@ -6,12 +6,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -42,7 +41,9 @@ public class ListSeven {
 
             // new ListSeven().readingAndSubstitution();
 
-            new ListSeven().orderDirectories(dir);
+            // new ListSeven().orderDirectories(dir);
+
+            new ListSeven().decoratorFile();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -219,5 +220,23 @@ public class ListSeven {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public void decoratorFile () throws IOException {
+        try {
+            String texto = "linha um\nlinha dois\nlinha três";
+            StringReader sr = new StringReader(texto);
+            MaisUmDecorador leitor = new MaisUmDecorador(new MeuDecorador(sr));
+
+            String linha;
+            while ((linha = leitor.readLine()) != null) {
+                System.out.println(linha);
+            }
+
+            leitor.close();
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 }
