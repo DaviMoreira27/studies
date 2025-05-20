@@ -1,19 +1,19 @@
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -40,7 +40,9 @@ public class ListSeven {
 
             // new ListSeven().inputAndOutputClass();
 
-            new ListSeven().readingAndSubstitution();
+            // new ListSeven().readingAndSubstitution();
+
+            new ListSeven().orderDirectories(dir);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -180,6 +182,40 @@ public class ListSeven {
             content = content.replace("muito", "pouco").replace("Muito", "Pouco");
 
             System.out.println(content);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void orderDirectories (String dir) throws Exception, IOException {
+        try {
+            boolean isDir = new File(dir).isDirectory();
+            
+            if (!isDir) {
+                throw new Exception("Is not a directory");
+            }
+
+            File[] getAll = new File(dir).listFiles();
+            List<File> comparable = new ArrayList<File>();
+            // String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+            for (File f : getAll) {
+                if (f.isDirectory()) {
+                    continue;
+                }
+
+                if (f.getName().contains("-") || f.getName().matches(".*\\d.*")) {
+                    f.delete();
+                }
+
+                comparable.add(f);
+
+            }
+
+            comparable.sort(Comparator.comparingLong(File::length));
+
+            for (int i = 0; i < comparable.size(); i++) {
+                System.out.printf("%04d-%s\n", i, comparable.get(i).getName());
+            }
         } catch (Exception e) {
             throw e;
         }
