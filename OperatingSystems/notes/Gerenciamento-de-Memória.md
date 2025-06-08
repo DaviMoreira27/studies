@@ -276,3 +276,118 @@ Há algoritmos específicos para esse swap in/out da memória, so irei citar o *
   - Sempre que uma página é acessada por um processo, o hardware ou SO **setam o bit R para 1**
   - Por estar organizado em uma lista circular, um ponteiro percorre todas as páginas multiplas vezes, sempre que é necessário susbtituir uma página, o ponteiro retira a primeira página com bit R = 0 da memória, e põem a nova página.
   - Enquanto ele passa, toda página que possui bit R = 1, possui esse bit zerado, até ser modificado na próxima referência.
+
+## Políticas de Substituição de Páginas
+
+Sempre que ocorre uma page fault e a memória está cheia, é necessário realizar uma troca de página, utilizando um dos algoritmos acima, ou diversos outros. Há dois tipos de políticas de substituição de Páginas
+
+- **Política Local** -> Um processo so pode substituir suas próprias páginas, o sistema aloca um número fixo de frames (páginas reais) para **cada processo** e quando há a necessidade de troca, o processo ira escolher apenas **entre seus frames**.
+  - Vantagens: **isolamento**, um processo não afeta diretamente outros - **Previsibilidade**, fácil de controlar o uso de memória por processo
+  - Desvantagens: difícil definir quantos frames cada processo ira necessitar para funcionar eficientemente.
+- **Política Global** -> Qualquer processo (a nível usuário) pode ter os seus frames substituídos por de outro processo,
+  - Vantagens: processos com precisam de mais memória podem usar mais quadros, menos trocas = menos latência
+  - Desvantagens: processos com menor prioridade podem ser prejudicados, ficado com poucos frames e gerando muitas faltas de páginas - um processo ineficiente pode prejudicar diversos outros.
+
+Na política global, é comum que o SO imponha travas que impeçam processos de retirarem frames dele, como por exemplo:
+
+- **Páginas fixas**: páginas críticas do SO são fixadas na memória e não podem ser substituídas
+- **Listas separadas por nível**: o SO mantém listas de páginas separadas para o **nível de usuário e kernel**, dessa forma pode-se restringir a substituição apenas entre as páginas de usuário.
+
+Uma implementação atual comum é o hibrído entre essas duas, **substituição global com limites de frames por processo**.
+
+**Algoritmos de substituição local (exclusivamente locais)**:
+• Working Set;
+• WSClock;
+
+**Algoritmos de substituição local/global**:
+• Ótimo;
+• NRU;
+• FIFO;
+• Segunda Chance;
+• LRU;
+• Relógio
+
+## Para onde a página vai ao ser descartada?
+
+Uma página é removida da RAM quando:
+
+- Há uma falta de página (page fault) — ou seja, o processo tenta acessar uma página que não está na RAM;
+
+- A memória RAM está cheia e não há quadros (frames) livres;
+
+- O sistema precisa escolher uma página para remover usando uma política de substituição (como LRU, FIFO, etc).
+
+Ao ser substituida ele sera direcionada a área de troca (swap area) localizada em disco. Ela é gerenciada como uma lista de espaços disponíveis. O endereço na área de troca de cada processo é mantida na tabela de processos (o MMU lida com isso).
+
+Há duas possibilidades de se lidar com isso:
+
+1. Assim que o processo é criado, ele é copiado todo para sua área de troca no disco, sendo carregado para a memória quando necessário (**paginação simples em disco**). Neste caso, é criada uma sub areas de troca diferentes para dados, pilha e programa.
+
+2. Nada é alocado antecipadamente, espaço é alocado em disco quando a página for enviada para lá. Assim, o processo na memória RAM não fica “amarrado” a uma área específica (**páginação por demanda em disco**;
+
+## Tabela de páginas invertida e Multinível
+
+Geralmente, cada processo possui uma tabela de páginas associada a ele, porém em arquiteturas modernas isso pode consumir uma grande quantidade de memórias, há duas alternativas para isso, **tabela de páginas invertida e tabela de páginas multinível**:
+
+### Tabela de páginas invertida
+
+O SO mantém uma **única tabela** para os page frames da memória (páginas reais). Cada entrada consiste do endereço virtual da página armazenada naquela página real, com informações sobre o processo dono da página virtual.
+
+Quando uma referência de memória é realizada (página virtual), a tabela de páginas invertida é pesquisada para encontrar a moldura de página correspondente.
+
+Enquanto a tabela de páginas comum é classificada por endereços virtuais, a invertida é **classificada com base em endereços físicos**.
+
+- Vantagens:
+
+  - Ocupa menos espaço;
+  - É mais fácil de gerenciar apenas uma tabela;
+
+- Desvantagens:
+  - Aumenta o tempo de pesquisa na tabela, pois apesar de ser **classificada por endereços físicos, é pesquisada por endereços lógicos**. Pode ser resolvido implementando **TLB**
+
+**TLB**, significa "Translation Lookaside Buffer" (Buffer de Tradução Lookaside). É um cache de hardware que armazena traduções recentes de endereços virtuais para endereços físicos, otimizando o acesso à memória.
+
+### Tabela de páginas Multinível
+
+Utilizado principalmente em arquiteturas 64 bits
+
+Em vez de ter uma única tabela gigante, o sistema usa uma árvore de tabelas. A ideia central é dividir o endereço virtual em vários pedaços, cada um sendo um índice em um nível da tabela
+
+Para mais informações, leia: https://www.baeldung.com/cs/multi-level-page-tables
+
+## Segmentação
+
+Diferente da paginação, onde a memória é dividida em blocos de tamanho fixo (páginas), na segmentação a memória é dividida em partes de tamanhos variáveis, de acordo com a estrutura lógica do programa.
+
+Dessa forma, código, dados, heap e pilha são dividas separadamente podendo crescer individualmente.
+
+Na segmentação é implementada uma tabela de segmentos por processo, mapeia endereço lógico para fisico. Cada entrada nessa tabela é composta de dois campos
+
+- **Endereço base**: Contém o endereço fisico inicial da onde o endereço está na memórias
+- **Limite**: tamanho do segmento
+
+Um endereço virtual na segmentação é composto por dois campos:
+
+- **Número do segmento**: usado para buscar uma entrada na **tabela de segmentos do processo**
+- **Offset**: a posição dentro de um bloco de memória (página ou segmento)
+
+A tradução funciona da seguinte forma:
+
+1. Recebe um endereço Virtual
+2. Consulta a **tabela de segmentos**
+3. Verifica se o offset é menor que o limites
+4. Calcula o endereço físico `base + offset`
+
+**Possui fragmentação externa**.
+
+## Segmentação paginada
+
+Resolve o problema de fragmentação externa da segmentação, enquanto separa o processo em partes que crescem individualmente.
+
+O endereço virtual é constituido de:
+
+[ Nº do Segmento ][ Nº da Página ][ Offset ]
+
+**Número do segmento** -> usado para cessar a tabela de segmentos do processo, cada entrada contém a tabela de páginas daquele segmentos
+**Número da página** -> usaddo para acessar a entrada da tabela de páginas desse segmento, cada entrada contém o quadro físico da memória.
+**Offset** -> indica a posição dentro do **page frame**.
