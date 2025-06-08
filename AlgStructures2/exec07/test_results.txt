@@ -1,0 +1,220 @@
+=== RELATÓRIO DE TESTES ===
+Data: Sat Jun  7 11:23:04 PM -03 2025
+
+================== TESTE 1 ==================
+Arquivo de entrada: tests_exec07/1.in
+
+--- ENTRADA ---
+ADD Maria 119999999 SãoCarlos
+ADD João 119888888 SãoPaulo
+ADD Ana 119777777 Araraquara
+LIST
+
+--- SAÍDA OBTIDA ---
+--- Registros Atuais ---
+[0] Maria|119999999|SãoCarlos
+[1] João|119888888|SãoPaulo
+[2] Ana|119777777|Araraquara
+
+--- SAÍDA ESPERADA ---
+--- Registros Atuais ---
+[0] Maria|119999999|SãoCarlos
+[1] João|119888888|SãoPaulo
+[2] Ana|119777777|Araraquara
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 2 ==================
+Arquivo de entrada: tests_exec07/2.in
+
+--- ENTRADA ---
+ADD Mario 111111111 Campinas
+ADD Laura 222222222 Bauru
+ADD Tania 333333333 Marilia
+DEL 1
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 1
+--- Registros Atuais ---
+[0] Mario|111111111|Campinas
+[2] Tania|333333333|Marilia
+
+--- SAÍDA ESPERADA ---
+Registro removido: 1
+--- Registros Atuais ---
+[0] Mario|111111111|Campinas
+[2] Tania|333333333|Marilia
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 3 ==================
+Arquivo de entrada: tests_exec07/3.in
+
+--- ENTRADA ---
+ADD Pedro 444444444 Americana
+ADD Alice 555555555 Sorocaba
+ADD Bruno 666666666 Limeira
+DEL 0
+DEL 1
+COMPACT
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 0
+Registro removido: 1
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Bruno|666666666|Limeira
+
+--- SAÍDA ESPERADA ---
+Registro removido: 0
+Registro removido: 1
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Bruno|666666666|Limeira
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 4 ==================
+Arquivo de entrada: tests_exec07/4.in
+
+--- ENTRADA ---
+ADD Ana 123456789 Araraquara
+ADD Beto 987654321 Campinas
+DEL 0
+DEL 1
+LIST
+COMPACT
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 0
+Registro removido: 1
+--- Registros Atuais ---
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+
+--- SAÍDA ESPERADA ---
+Registro removido: 0
+Registro removido: 1
+--- Registros Atuais ---
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 5 ==================
+Arquivo de entrada: tests_exec07/5.in
+
+--- ENTRADA ---
+ADD Leo 111111111 Limeira
+ADD Rita 222222222 Sorocaba
+DEL 0
+COMPACT
+ADD Carla 333333333 Taubate
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Rita|222222222|Sorocaba
+[1] Carla|333333333|Taubate
+
+--- SAÍDA ESPERADA ---
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Rita|222222222|Sorocaba
+[1] Carla|333333333|Taubate
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 6 ==================
+Arquivo de entrada: tests_exec07/6.in
+
+--- ENTRADA ---
+ADD A 1 X
+ADD B 2 Y
+ADD C 3 Z
+DEL 1
+LIST
+COMPACT
+LIST
+DEL 0
+COMPACT
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 1
+--- Registros Atuais ---
+[0] A|1|X
+[2] C|3|Z
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] A|1|X
+[1] C|3|Z
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] C|3|Z
+
+--- SAÍDA ESPERADA ---
+Registro removido: 1
+--- Registros Atuais ---
+[0] A|1|X
+[2] C|3|Z
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] A|1|X
+[1] C|3|Z
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] C|3|Z
+
+RESULTADO: PASSOU ✓
+
+
+================== TESTE 7 ==================
+Arquivo de entrada: tests_exec07/7.in
+
+--- ENTRADA ---
+ADD X 999 Nowhere
+DEL 0
+COMPACT
+ADD Y 888 Somewhere
+DEL 0
+COMPACT
+ADD Z 777 Elsewhere
+LIST
+
+--- SAÍDA OBTIDA ---
+Registro removido: 0
+Arquivo compactado com sucesso.
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Z|777|Elsewhere
+
+--- SAÍDA ESPERADA ---
+Registro removido: 0
+Arquivo compactado com sucesso.
+Registro removido: 0
+Arquivo compactado com sucesso.
+--- Registros Atuais ---
+[0] Z|777|Elsewhere
+
+RESULTADO: PASSOU ✓
+
+
+=== RESUMO FINAL ===
+Testes executados: 7
+Passou: 7
+Falhou: 0
