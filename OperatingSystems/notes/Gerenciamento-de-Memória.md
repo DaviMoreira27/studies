@@ -1,9 +1,12 @@
-# Partições Fixas
-
 - Fragmentação Interna - Espaço de sobra em uma partição ocupada
 
 - Fragmentação Externa - A soma dos espaços das partições disponíveis
   é adequada ao tamanho do processo, porém não são contínuas
+
+
+# Partições Fixas
+
+- Ocorria fragmentação interna
 
 - Fila Única - A primeira partição em que o processo couber, ele será
   colocado
@@ -45,7 +48,11 @@
   relação ao processo. Combate fragmentação externa, porém favorece a
   interna.
 
-# Paginação e Segmentação
+- **Next Fit -** É um algoritmo de alocação de memória usado em particionamento variável.
+Ele é uma variação do algoritmo First Fit, com uma diferença importante: a busca pelo
+espaço livre começa a partir da última alocação realizada, não do início da memória.
+
+# Memória Paginação e Segmentação
 
 **Memória Virtual -** Expandir a memória física do sistema,
 possibilitando a execução de processos maiores. Dividir o processo em
@@ -265,7 +272,7 @@ pelo SO ou tratado pelo próprio processo.
 
 Há algoritmos específicos para esse swap in/out da memória, so irei citar o **LRU por Aging** e **Clock**
 
-- **LRU Aging** -> Esse algortimo parte do princípio de cada página possuir um contador iniciado em zero e incrementado a cada referência à página, a página com o melhor contador é trocada quando necessário, o problema disso é uma página nova que está sendo referenciada com frequência poderá ser trocada ao invés de uma página antiga que já não é mais referenciada. Para resolver esse problema:
+- **NFU Not Frequently Used** -> Esse algortimo parte do princípio de cada página possuir um contador iniciado em zero e incrementado de 1 em 1 a cada referência à página, a página com o menor contador é trocada quando necessário, o problema disso é uma página nova que está sendo referenciada com frequência poderá ser trocada ao invés de uma página antiga que já não é mais referenciada. Para resolver esse problema é utilizado a variação **LFU** (será falado apenas da implementação por software (**Aging**):
 
   - Um contador de mais ou menos 8 bits é associada a cada página
   - A cada [**clock tick**](https://superuser.com/a/101202) os contadores de todas as páginas sofrem um shift para a direita (deslocados)
@@ -391,3 +398,44 @@ O endereço virtual é constituido de:
 **Número do segmento** -> usado para cessar a tabela de segmentos do processo, cada entrada contém a tabela de páginas daquele segmentos
 **Número da página** -> usaddo para acessar a entrada da tabela de páginas desse segmento, cada entrada contém o quadro físico da memória.
 **Offset** -> indica a posição dentro do **page frame**.
+
+
+# Sumário
+
+### 1. Gerenciamento por Partições
+
+*   **Partições Fixas:** A memória é dividida em blocos de tamanho predefinido.
+    *   **Problemas:** Causa **fragmentação interna** (espaço desperdiçado dentro de uma partição) e **fragmentação externa** (espaços livres não contíguos que impedem a alocação de um processo).
+    *   **Alocação:** Pode usar uma **fila única** para todos os processos ou **filas múltiplas** (uma por partição).
+
+*   **Partições Variáveis:** As partições são criadas dinamicamente com o tamanho exato do processo, eliminando a fragmentação interna.
+    *   **Problema:** Sofre de **fragmentação externa**. A solução é a **compactação** (juntar os espaços livres), mas é um processo custoso para a CPU.
+    *   **Gerenciamento:** Utiliza **Bitmap** (um mapa de bits que indica se cada bloco está livre ou ocupado) ou **Lista Encadeada**.
+
+### 2. Algoritmos de Alocação de Memória
+
+São estratégias para decidir em qual espaço livre um processo será alocado:
+*   **First Fit:** Aloca no primeiro espaço disponível que seja grande o suficiente.
+*   **Best Fit:** Aloca no menor espaço que comporte o processo, minimizando a sobra.
+*   **Worst Fit:** Aloca no maior espaço disponível, deixando a maior sobra possível.
+
+### 3. Memória Virtual: Paginação e Segmentação
+
+A **memória virtual** é uma técnica que permite executar processos maiores que a memória RAM, traduzindo endereços virtuais (do processo) para endereços físicos (na RAM).
+
+*   **Paginação:**
+    *   **Conceito:** A memória virtual e a física são divididas em blocos de tamanho fixo chamados **páginas** e **page frames**.
+    *   **Funcionamento:** Uma **Tabela de Páginas** mapeia as páginas virtuais de um processo para os frames na memória física. Para acelerar esse processo, usa-se um cache de hardware chamado **TLB (Translation Lookaside Buffer)**.
+    *   **Page Fault:** Ocorre quando um processo tenta acessar uma página que não está na RAM, fazendo com que o SO a carregue do disco.
+    *   **Problema:** Fragmentação interna.
+    *   **Substituição:** Quando a memória está cheia, algoritmos como **Clock** ou **LRU** decidem qual página remover. A política pode ser **local** (troca páginas do próprio processo) ou **global** (troca páginas de qualquer processo de usuário).
+    *   **Otimizações:** Para sistemas modernos, usam-se **Tabelas de Páginas Multinível** (para arquiteturas 64-bit) ou **Invertidas** (uma tabela única para todo o sistema, economizando espaço).
+
+*   **Segmentação:**
+    *   **Conceito:** A memória é dividida em blocos de tamanho variável e com significado lógico (ex: código, dados, pilha).
+    *   **Funcionamento:** Uma **Tabela de Segmentos** armazena o endereço base e o tamanho de cada segmento.
+    *   **Problema:** Causa **fragmentação externa**.
+
+*   **Segmentação Paginada:**
+    *   **Conceito:** Um modelo híbrido onde os segmentos lógicos são, por sua vez, divididos em páginas.
+    *   **Vantagem:** Combina a organização lógica da segmentação com a eficiência da paginação, eliminando a fragmentação externa.
