@@ -1,9 +1,8 @@
-package exec07;
-
 import java.io.*;
 import java.util.Map;
 
 public class RegisterManager {
+
     private final File file;
     private final Index index = new Index();
     private int idCounter = 0;
@@ -12,7 +11,8 @@ public class RegisterManager {
         this.file = new File(fileName);
     }
 
-    public void addIndex(String name, String phone, String city) throws IOException {
+    public void addIndex(String name, String phone, String city)
+        throws IOException {
         Register reg = new Register(name, phone, city);
         try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             raf.seek(raf.length());
@@ -43,7 +43,9 @@ public class RegisterManager {
                 raf.seek(entry.getValue());
                 String linha = raf.readLine();
                 if (linha != null && !linha.startsWith("*")) {
-                    System.out.println("[" + entry.getKey() + "] " + linha.trim());
+                    System.out.println(
+                        "[" + entry.getKey() + "] " + linha.trim()
+                    );
                 }
             }
         }
@@ -51,9 +53,10 @@ public class RegisterManager {
 
     public void compact() throws IOException {
         File temp = new File("temp.txt");
-        try (RandomAccessFile rafOld = new RandomAccessFile(file, "r");
-                RandomAccessFile rafNew = new RandomAccessFile(temp, "rw")) {
-
+        try (
+            RandomAccessFile rafOld = new RandomAccessFile(file, "r");
+            RandomAccessFile rafNew = new RandomAccessFile(temp, "rw")
+        ) {
             index.indexClear();
             idCounter = 0;
 
