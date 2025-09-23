@@ -1,0 +1,7 @@
+ADD Pedro 444444444 Americana
+ADD Alice 555555555 Sorocaba
+ADD Bruno 666666666 Limeira
+DEL 0
+DEL 1
+COMPACT
+LIST

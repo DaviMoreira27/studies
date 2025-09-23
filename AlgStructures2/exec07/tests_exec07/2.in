@@ -1,0 +1,5 @@
+ADD Mario 111111111 Campinas
+ADD Laura 222222222 Bauru
+ADD Tania 333333333 Marilia
+DEL 1
+LIST

@@ -1,0 +1,6 @@
+ADD Leo 111111111 Limeira
+ADD Rita 222222222 Sorocaba
+DEL 0
+COMPACT
+ADD Carla 333333333 Taubate
+LIST

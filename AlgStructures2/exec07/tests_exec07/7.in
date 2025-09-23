@@ -1,0 +1,8 @@
+ADD X 999 Nowhere
+DEL 0
+COMPACT
+ADD Y 888 Somewhere
+DEL 0
+COMPACT
+ADD Z 777 Elsewhere
+LIST
