@@ -7,9 +7,9 @@ public class Bowling {
         int i = 0;
 
         while (frame < 10) {
-            int[] resultado = scoreFrame(i, s);
-            score += resultado[0];
-            i += resultado[1];
+            int resultado = scoreFrame(i, s);
+            score += resultado;
+            i += 2;
             frame++;
         }
         return score;
@@ -58,7 +58,7 @@ public class Bowling {
         int second;
 
         if (isStrike(s.charAt(index))) {
-            second = this.nextThrow(index + 2, s); // <--- aqui pode sair do tamanho da string
+            second = this.nextThrow(index + 2, s); 
         } else {
             second = this.nextThrow(index + 1, s);
         }
@@ -66,13 +66,13 @@ public class Bowling {
         return first + second;
     }
 
-    public int[] scoreFrame(int index, String s) {
+    public int scoreFrame(int index, String s) {
         char first = s.charAt(index);
 
         // Strike
         if (isStrike(first)) {
             int bonus = nextThrow(index + 1, s) + nextThrow(index + 2, s);
-            return new int[] { 10 + bonus, 2 }; // Strike occupies 2 plays
+            return 10 + bonus; // Strike occupies 2 plays
         }
 
         char second = s.charAt(index + 1);
@@ -80,10 +80,10 @@ public class Bowling {
         // Spare
         if (isSpare(second)) {
             int bonus = nextThrow(index + 2, s);
-            return new int[] { 10 + bonus, 2 };
+            return  10 + bonus;
         }
 
         // Frame normal
-        return new int[] { moveValue(first) + moveValue(second), 2 };
+        return moveValue(first) + moveValue(second);
     }
 }

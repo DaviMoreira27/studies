@@ -117,6 +117,5 @@ public class BowlingTest {
     public void testPDFExampleOne() {
         Bowling b = new Bowling();
         assertEquals(122, b.computaPlacar("8070539/9/X-80513/90-"));
-        // assertEquals(133, b.computaPlacar("8/90447290X-X-80359/7"));
     }
 }

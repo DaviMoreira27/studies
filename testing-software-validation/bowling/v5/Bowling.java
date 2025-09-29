@@ -9,7 +9,6 @@ public class Bowling {
         while (frame < 10) {
             int[] resultado = scoreFrame(i, s);
             score += resultado[0];
-            System.out.println("Resultado: " + score);
             i += resultado[1];
             frame++;
         }
@@ -69,7 +68,6 @@ public class Bowling {
     }
     public int[] scoreFrame(int index, String s) {
         char first = s.charAt(index);
-        System.out.println("CHAR 1: " + first);
 
         // Strike
         if (isStrike(first)) {
@@ -84,7 +82,6 @@ public class Bowling {
             int bonus = nextThrow(index + 2, s);
             return new int[] { 10 + bonus, 2 };
         }
-        System.out.println("CHAR 2: " + second);
 
         // Normal frame
         return new int[] { moveValue(first) + moveValue(second), 2 };

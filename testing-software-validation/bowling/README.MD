@@ -1,0 +1,1 @@
+Utilizei IA para formatar o texto do PDF.

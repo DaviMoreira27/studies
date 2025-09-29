@@ -74,25 +74,22 @@ public class BowlingTest {
     @Test
     public void testScoreFrameStrike() {
         Bowling b = new Bowling();
-        int[] r = b.scoreFrame(0, "X53");
-        assertEquals(18, r[0]); // 10 + 5 + 3
-        assertEquals(2, r[1]);
+        int r = b.scoreFrame(0, "X53");
+        assertEquals(18, r); // 10 + 5 + 3
     }
 
     @Test
     public void testScoreFrameSpare() {
         Bowling b = new Bowling();
-        int[] r = b.scoreFrame(0, "5/3");
-        assertEquals(13, r[0]); // 10 + 3
-        assertEquals(2, r[1]);
+        int r = b.scoreFrame(0, "5/3");
+        assertEquals(13, r); // 10 + 3
     }
 
     @Test
     public void testScoreNormalFrame() {
         Bowling b = new Bowling();
-        int[] r = b.scoreFrame(0, "53");
-        assertEquals(8, r[0]);
-        assertEquals(2, r[1]);
+        int r = b.scoreFrame(0, "53");
+        assertEquals(8, r);
     }
 
     // V5
