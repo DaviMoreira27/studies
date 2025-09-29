@@ -54,22 +54,16 @@ public class Bowling {
     }
 
     public int twoNextThrows(int index, String s) {
-        int total = 0;
-        int count = 0;
-        int i = index;
+        int first = this.nextThrow(index, s);
+        int second;
 
-        while (count < 2 && i < s.length()) {
-            total += nextThrow(i, s);
-            count++;
-
-            if (isStrike(s.charAt(i))) {
-                i += 2; // Strike ocuppies 2 chars
-            } else {
-                i++;
-            }
+        if (isStrike(s.charAt(index))) {
+            second = this.nextThrow(index + 2, s); // <--- aqui pode sair do tamanho da string
+        } else {
+            second = this.nextThrow(index + 1, s);
         }
 
-        return total;
+        return first + second;
     }
 
     public int[] scoreFrame(int index, String s) {

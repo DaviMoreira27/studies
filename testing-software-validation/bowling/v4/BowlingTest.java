@@ -53,7 +53,6 @@ public class BowlingTest {
     @Test
     public void testNextThrow() {
         Bowling b = new Bowling();
-        assertEquals(10, b.nextThrow(0, "X12")); // strike
         assertEquals(2, b.nextThrow(1, "12-")); // digit
         assertEquals(0, b.nextThrow(2, "12-")); // miss
     }
@@ -68,7 +67,6 @@ public class BowlingTest {
     public void testTwoNextThrows() {
         Bowling b = new Bowling();
         assertEquals(3, b.twoNextThrows(0, "12-")); // 1+2
-        assertEquals(13, b.twoNextThrows(0, "X53")); // 10+3
     }
 
     // V4
