@@ -1,8 +1,9 @@
 import unittest
+
 from placar import Placar
 
-class TestPlacar(unittest.TestCase):
 
+class TestPlacar(unittest.TestCase):
     def setUp(self):
         self.placar = Placar()
         self.placar.__init__()
