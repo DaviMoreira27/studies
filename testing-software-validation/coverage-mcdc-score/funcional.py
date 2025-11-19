@@ -399,3 +399,74 @@ class TestCheckQuina(unittest.TestCase):
 
     def test_quina_false_4_4_4_4_2(self):
         self.assertFalse(self.placar.checkQuina([4, 4, 4, 4, 2]))
+
+
+
+class TestCheckFullMCDC(unittest.TestCase):
+    def setUp(self):
+        self.p = Placar()
+
+    def test_full_mcdc_1(self):
+        self.assertFalse(self.p.checkFull([2,2,2,3,4]))
+
+
+class TestCheckSeqMaiorMCDC(unittest.TestCase):
+    def setUp(self):
+        self.p = Placar()
+
+    def test_seq_mcdc_1(self):
+        self.assertFalse(self.p.checkSeqMaior([1,2,3,4,6]))
+
+    def test_seq_mcdc_2(self):
+        self.assertFalse(self.p.checkSeqMaior([1,2,3,5,6]))
+
+    def test_seq_mcdc_3(self):
+        self.assertFalse(self.p.checkSeqMaior([1,2,4,5,6]))
+
+    def test_seq_mcdc_4(self):
+        self.assertFalse(self.p.checkSeqMaior([1,3,4,5,6]))
+
+    def test_seq_mcdc_5(self):
+        self.assertTrue(self.p.checkSeqMaior([2,3,4,5,6]))
+
+class TestCheckQuadraMCDC(unittest.TestCase):
+    def setUp(self):
+        self.p = Placar()
+
+    def test_quadra_mcdc_1(self):
+        self.assertFalse(self.p.checkQuadra([1,1,1,2,3]))
+
+    def test_quadra_mcdc_2(self):
+        self.assertFalse(self.p.checkQuadra([1,1,1,3,3]))
+
+    def test_quadra_mcdc_3(self):
+        self.assertFalse(self.p.checkQuadra([2,2,3,3,3]))
+
+    def test_quadra_mcdc_4(self):
+        self.assertFalse(self.p.checkQuadra([1,1,2,2,2]))
+
+    def test_quadra_mcdc_6(self):
+        self.assertTrue(self.p.checkQuadra([4,4,4,4,6]))
+
+    def test_quadra_mcdc_7(self):
+        self.assertTrue(self.p.checkQuadra([5,5,5,5,5]))
+
+
+class TestCheckQuinaMCDC(unittest.TestCase):
+    def setUp(self):
+        self.p = Placar()
+
+    def test_quina_mcdc_1(self):
+        self.assertFalse(self.p.checkQuina([1,1,1,1,2]))
+
+    def test_quina_mcdc_2(self):
+        self.assertFalse(self.p.checkQuina([1,1,1,2,1]))
+
+    def test_quina_mcdc_3(self):
+        self.assertFalse(self.p.checkQuina([1,1,2,1,1]))
+
+    def test_quina_mcdc_4(self):
+        self.assertFalse(self.p.checkQuina([1,2,1,1,1]))
+
+    def test_quina_mcdc_5(self):
+        self.assertTrue(self.p.checkQuina([3,3,3,3,3]))
