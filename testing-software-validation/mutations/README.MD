@@ -5,3 +5,4 @@
 5. python -m pyproteum mutagen --create --all 100 0 --D . placar_session
 6. python -m pyproteum exemuta --exec placar_session
 7. python -m pyproteum mutaview --gui placar_session
+8. python -m pyproteum tcase --add --D . --S mutation.py placar_session
